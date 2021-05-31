@@ -1,4 +1,5 @@
 const DHT_PIN = B1;
+const YELLOW_LED_PIN = B0;
 
 let dht = require("DHT11").connect(DHT_PIN);
 const wifi = require("Wifi");
@@ -10,17 +11,20 @@ wifi.connect("lan-solo", {password:"188doris"}, ap => {
   console.log("Connected to wifi");
   console.log(ap);
   WifiReady = true;
+  yellowLedFlash();
 });
 
 function postData(temp, humidity) {
   if (!WifiReady) return;
   
   const payload = JSON.stringify({
-    temp: temp,
-    humidity: humidity
+        temp: temp,
+        humidity: humidity,
+        value1: temp,
+        value2: humidity
   });
   
-  const URL = "http://192.168.86.30:8080/post";
+  const URL = "https://maker.ifttt.com/trigger/temp/with/key/be7hGvCfgxR_2GUs5d-rBB";
   
   var options = url.parse(URL);
   options.method = "POST";
@@ -28,16 +32,13 @@ function postData(temp, humidity) {
     'Content-Type': 'application/json',
     "Content-Length":payload.length
   };
-  options.body = {msg: "Hello"};
   
   console.log("Sending request");
   require("http").request(options, res => {
-    console.log(res);
     res.on("data", data => {
       console.log(data);
     });
     res.on("error", err => console.log(err));
-    res.on("close", _ => console.log("Connection closed"));
   }).end(payload);
 }
 
@@ -48,7 +49,12 @@ const getTemperature = () => {
     const humidity = data.rh.toString();
     
     if (temp === "-1") {
+      dht.close();
       dht = require("DHT11").connect(DHT_PIN);
+      yellowLedOn();
+      setTimeout(() => {
+        reset();
+      }, 60000);
       console.log("DHT re-initialized");
     } else {
       console.log(`Current temp: ${temp}`);
@@ -56,6 +62,23 @@ const getTemperature = () => {
       postData(temp, humidity);
     }
   });
+};
+
+const yellowLedOn = () => {
+  digitalWrite(YELLOW_LED_PIN, 1);
+};
+
+const yellowLedOff = () => {
+  digitalWrite(YELLOW_LED_PIN, 0);
+};
+
+const yellowLedFlash = () => {
+  yellowLedOn();
+  setTimeout(yellowLedOff, 200);
+  setTimeout(yellowLedOn, 400);
+  setTimeout(yellowLedOff, 600);
+  setTimeout(yellowLedOn, 800);
+  setTimeout(yellowLedOff, 1000);
 };
 
 LED1.write(LEDStatus);
@@ -68,5 +91,5 @@ const flashLED = () => {
 setInterval(() => {
   getTemperature();
   flashLED();
-}, 5000);
+}, 60000);
 

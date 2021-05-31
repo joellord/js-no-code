@@ -1,0 +1,670 @@
+[
+  {
+      "id": "f6f2187d.f17ca8",
+      "type": "tab",
+      "label": "Flow 1",
+      "disabled": false,
+      "info": ""
+  },
+  {
+      "id": "e3bdb980.d00b68",
+      "type": "tab",
+      "label": "Flow 2",
+      "disabled": false,
+      "info": ""
+  },
+  {
+      "id": "5aee0e6c.21d59",
+      "type": "tab",
+      "label": "Lights",
+      "disabled": false,
+      "info": ""
+  },
+  {
+      "id": "24313efe.555462",
+      "type": "tab",
+      "label": "Plant",
+      "disabled": false,
+      "info": ""
+  },
+  {
+      "id": "bdf3150a.e64e18",
+      "type": "tab",
+      "label": "Air Exchanger",
+      "disabled": false,
+      "info": ""
+  },
+  {
+      "id": "d4865973.f553e8",
+      "type": "tab",
+      "label": "Thermostat",
+      "disabled": false,
+      "info": ""
+  },
+  {
+      "id": "d8b7ea9e.687e18",
+      "type": "mongodb",
+      "hostname": "localhost",
+      "topology": "direct",
+      "connectOptions": "",
+      "port": "27017",
+      "db": "admin",
+      "name": ""
+  },
+  {
+      "id": "3cc11d24.ff01a2",
+      "type": "comment",
+      "z": "f6f2187d.f17ca8",
+      "name": "WARNING: please check you have started this container with a volume that is mounted to /data\\n otherwise any flow changes are lost when you redeploy or upgrade the container\\n (e.g. upgrade to a more recent node-red docker image).\\n  If you are using named volumes you can ignore this warning.\\n Double click or see info side panel to learn how to start Node-RED in Docker to save your work",
+      "info": "\nTo start docker with a bind mount volume (-v option), for example:\n\n```\ndocker run -it -p 1880:1880 -v /home/user/node_red_data:/data --name mynodered nodered/node-red\n```\n\nwhere `/home/user/node_red_data` is a directory on your host machine where you want to store your flows.\n\nIf you do not do this then you can experiment and redploy flows, but if you restart or upgrade the container the flows will be disconnected and lost. \n\nThey will still exist in a hidden data volume, which can be recovered using standard docker techniques, but that is much more complex than just starting with a named volume as described above.",
+      "x": 350,
+      "y": 80,
+      "wires": []
+  },
+  {
+      "id": "f639d15d.e895",
+      "type": "mongodb out",
+      "z": "f6f2187d.f17ca8",
+      "mongodb": "d8b7ea9e.687e18",
+      "name": "",
+      "collection": "flow-data",
+      "payonly": false,
+      "upsert": false,
+      "multi": false,
+      "operation": "insert",
+      "x": 530,
+      "y": 300,
+      "wires": []
+  },
+  {
+      "id": "c4b86ed2.65d33",
+      "type": "inject",
+      "z": "f6f2187d.f17ca8",
+      "name": "",
+      "props": [
+          {
+              "p": "payload"
+          },
+          {
+              "p": "topic",
+              "vt": "str"
+          }
+      ],
+      "repeat": "",
+      "crontab": "",
+      "once": false,
+      "onceDelay": 0.1,
+      "topic": "",
+      "payload": "",
+      "payloadType": "date",
+      "x": 250,
+      "y": 320,
+      "wires": [
+          [
+              "f639d15d.e895"
+          ]
+      ]
+  },
+  {
+      "id": "790e6a83.4d81c4",
+      "type": "inject",
+      "z": "e3bdb980.d00b68",
+      "name": "",
+      "props": [
+          {
+              "p": "payload"
+          },
+          {
+              "p": "topic",
+              "vt": "str"
+          }
+      ],
+      "repeat": "",
+      "crontab": "",
+      "once": false,
+      "onceDelay": 0.1,
+      "topic": "",
+      "payload": "{\"message\":\"Hello World!\"}",
+      "payloadType": "json",
+      "x": 180,
+      "y": 120,
+      "wires": [
+          [
+              "2f2c47e5.a32988"
+          ]
+      ]
+  },
+  {
+      "id": "eaa42ee0.44bd1",
+      "type": "debug",
+      "z": "e3bdb980.d00b68",
+      "name": "",
+      "active": true,
+      "tosidebar": true,
+      "console": false,
+      "tostatus": false,
+      "complete": "false",
+      "statusVal": "",
+      "statusType": "auto",
+      "x": 480,
+      "y": 140,
+      "wires": []
+  },
+  {
+      "id": "3995ad58.168252",
+      "type": "mongodb out",
+      "z": "e3bdb980.d00b68",
+      "mongodb": "d8b7ea9e.687e18",
+      "name": "",
+      "collection": "flow-data",
+      "payonly": false,
+      "upsert": false,
+      "multi": false,
+      "operation": "insert",
+      "x": 530,
+      "y": 240,
+      "wires": []
+  },
+  {
+      "id": "2f2c47e5.a32988",
+      "type": "trigger",
+      "z": "e3bdb980.d00b68",
+      "name": "",
+      "op1": "1",
+      "op2": "0",
+      "op1type": "str",
+      "op2type": "str",
+      "duration": "1000",
+      "extend": false,
+      "overrideDelay": false,
+      "units": "ms",
+      "reset": "",
+      "bytopic": "all",
+      "topic": "topic",
+      "outputs": 1,
+      "x": 240,
+      "y": 220,
+      "wires": [
+          [
+              "eaa42ee0.44bd1"
+          ]
+      ]
+  },
+  {
+      "id": "7c925063.f0135",
+      "type": "sun-event-inject",
+      "z": "5aee0e6c.21d59",
+      "name": "",
+      "latitude": "45",
+      "longitude": "-73",
+      "event": "sunset",
+      "offset": "0",
+      "injectEventTimesAfterStartup": false,
+      "x": 200,
+      "y": 320,
+      "wires": [
+          [
+              "6ebc59ea.a7f638"
+          ]
+      ]
+  },
+  {
+      "id": "6ebc59ea.a7f638",
+      "type": "delay",
+      "z": "5aee0e6c.21d59",
+      "name": "",
+      "pauseType": "delay",
+      "timeout": "1",
+      "timeoutUnits": "hours",
+      "rate": "1",
+      "nbRateUnits": "1",
+      "rateUnits": "second",
+      "randomFirst": "1",
+      "randomLast": "5",
+      "randomUnits": "seconds",
+      "drop": false,
+      "x": 380,
+      "y": 420,
+      "wires": [
+          [
+              "33693e98.bc2d42"
+          ]
+      ]
+  },
+  {
+      "id": "33693e98.bc2d42",
+      "type": "trigger",
+      "z": "5aee0e6c.21d59",
+      "name": "",
+      "op1": "1",
+      "op2": "0",
+      "op1type": "str",
+      "op2type": "str",
+      "duration": "4",
+      "extend": false,
+      "overrideDelay": false,
+      "units": "hr",
+      "reset": "",
+      "bytopic": "all",
+      "topic": "topic",
+      "outputs": 1,
+      "x": 590,
+      "y": 340,
+      "wires": [
+          [
+              "8d027e5d.e7232",
+              "194cdc41.e634a4"
+          ]
+      ]
+  },
+  {
+      "id": "8d027e5d.e7232",
+      "type": "mongodb out",
+      "z": "5aee0e6c.21d59",
+      "mongodb": "d8b7ea9e.687e18",
+      "name": "",
+      "collection": "flow-data",
+      "payonly": false,
+      "upsert": false,
+      "multi": false,
+      "operation": "insert",
+      "x": 860,
+      "y": 240,
+      "wires": []
+  },
+  {
+      "id": "194cdc41.e634a4",
+      "type": "http request",
+      "z": "5aee0e6c.21d59",
+      "name": "",
+      "method": "GET",
+      "ret": "txt",
+      "paytoqs": "ignore",
+      "url": "http://192.168.200.11",
+      "tls": "",
+      "persist": false,
+      "proxy": "",
+      "authType": "",
+      "x": 820,
+      "y": 440,
+      "wires": [
+          []
+      ]
+  },
+  {
+      "id": "fac05e15.c1474",
+      "type": "http in",
+      "z": "24313efe.555462",
+      "name": "",
+      "url": "/plant",
+      "method": "get",
+      "upload": false,
+      "swaggerDoc": "",
+      "x": 160,
+      "y": 280,
+      "wires": [
+          [
+              "dfe35e25.1567b"
+          ]
+      ]
+  },
+  {
+      "id": "dfe35e25.1567b",
+      "type": "range",
+      "z": "24313efe.555462",
+      "minin": "0",
+      "maxin": "1023",
+      "minout": "0",
+      "maxout": "100",
+      "action": "scale",
+      "round": true,
+      "property": "payload",
+      "name": "",
+      "x": 390,
+      "y": 300,
+      "wires": [
+          [
+              "23b4f3e5.8667bc"
+          ]
+      ]
+  },
+  {
+      "id": "23b4f3e5.8667bc",
+      "type": "switch",
+      "z": "24313efe.555462",
+      "name": "",
+      "property": "payload",
+      "propertyType": "msg",
+      "rules": [
+          {
+              "t": "lt",
+              "v": "25",
+              "vt": "num"
+          }
+      ],
+      "checkall": "true",
+      "repair": false,
+      "outputs": 1,
+      "x": 570,
+      "y": 240,
+      "wires": [
+          [
+              "606c21e5.57a82",
+              "ac6aafdc.49a05"
+          ]
+      ]
+  },
+  {
+      "id": "606c21e5.57a82",
+      "type": "e-mail",
+      "z": "24313efe.555462",
+      "server": "smtp.gmail.com",
+      "port": "465",
+      "secure": true,
+      "tls": true,
+      "name": "joelphy@gmail.com",
+      "dname": "",
+      "x": 790,
+      "y": 280,
+      "wires": []
+  },
+  {
+      "id": "d4041db6.76913",
+      "type": "http in",
+      "z": "d4865973.f553e8",
+      "name": "",
+      "url": "/temperature",
+      "method": "get",
+      "upload": false,
+      "swaggerDoc": "",
+      "x": 130,
+      "y": 240,
+      "wires": [
+          [
+              "26ca7443.c43bec"
+          ]
+      ]
+  },
+  {
+      "id": "26ca7443.c43bec",
+      "type": "function",
+      "z": "d4865973.f553e8",
+      "name": "get_hour",
+      "func": "\nreturn msg;",
+      "outputs": 1,
+      "noerr": 0,
+      "initialize": "",
+      "finalize": "",
+      "libs": [],
+      "x": 340,
+      "y": 340,
+      "wires": [
+          [
+              "fbb43c46.99b4d"
+          ]
+      ]
+  },
+  {
+      "id": "fbb43c46.99b4d",
+      "type": "switch",
+      "z": "d4865973.f553e8",
+      "name": "check_time",
+      "property": "payload",
+      "propertyType": "msg",
+      "rules": [
+          {
+              "t": "eq",
+              "v": "",
+              "vt": "str"
+          },
+          {
+              "t": "eq",
+              "v": "",
+              "vt": "str"
+          }
+      ],
+      "checkall": "true",
+      "repair": false,
+      "outputs": 2,
+      "x": 530,
+      "y": 440,
+      "wires": [
+          [
+              "c7c03386.37dee"
+          ],
+          []
+      ]
+  },
+  {
+      "id": "c7c03386.37dee",
+      "type": "switch",
+      "z": "d4865973.f553e8",
+      "name": "check_temp",
+      "property": "payload",
+      "propertyType": "msg",
+      "rules": [
+          {
+              "t": "lt",
+              "v": "17",
+              "vt": "str"
+          },
+          {
+              "t": "gt",
+              "v": "19",
+              "vt": "str"
+          }
+      ],
+      "checkall": "true",
+      "repair": false,
+      "outputs": 2,
+      "x": 690,
+      "y": 360,
+      "wires": [
+          [
+              "96a60947.669f98"
+          ],
+          [
+              "3c30ddd.827d422"
+          ]
+      ]
+  },
+  {
+      "id": "96a60947.669f98",
+      "type": "http request",
+      "z": "d4865973.f553e8",
+      "name": "heat_on",
+      "method": "GET",
+      "ret": "txt",
+      "paytoqs": "ignore",
+      "url": "",
+      "tls": "",
+      "persist": false,
+      "proxy": "",
+      "authType": "",
+      "x": 860,
+      "y": 260,
+      "wires": [
+          []
+      ]
+  },
+  {
+      "id": "3c30ddd.827d422",
+      "type": "http request",
+      "z": "d4865973.f553e8",
+      "name": "heat_off",
+      "method": "GET",
+      "ret": "txt",
+      "paytoqs": "ignore",
+      "url": "",
+      "tls": "",
+      "persist": false,
+      "proxy": "",
+      "authType": "",
+      "x": 890,
+      "y": 440,
+      "wires": [
+          []
+      ]
+  },
+  {
+      "id": "2964ea18.c6a706",
+      "type": "interval",
+      "z": "bdf3150a.e64e18",
+      "name": "interval",
+      "interval": "1",
+      "onstart": false,
+      "msg": "ping",
+      "showstatus": true,
+      "unit": "hours",
+      "statusformat": "YYYY-MM-D HH:mm:ss",
+      "x": 200,
+      "y": 240,
+      "wires": [
+          [
+              "21d123b.8ae03dc"
+          ]
+      ]
+  },
+  {
+      "id": "6ad13919.c36548",
+      "type": "trigger",
+      "z": "bdf3150a.e64e18",
+      "name": "",
+      "op1": "1",
+      "op2": "0",
+      "op1type": "str",
+      "op2type": "str",
+      "duration": "20",
+      "extend": false,
+      "overrideDelay": false,
+      "units": "min",
+      "reset": "",
+      "bytopic": "all",
+      "topic": "topic",
+      "outputs": 1,
+      "x": 610,
+      "y": 200,
+      "wires": [
+          [
+              "6053bcb7.55c644"
+          ]
+      ]
+  },
+  {
+      "id": "21d123b.8ae03dc",
+      "type": "function",
+      "z": "bdf3150a.e64e18",
+      "name": "get_hour",
+      "func": "\nreturn msg;",
+      "outputs": 1,
+      "noerr": 0,
+      "initialize": "",
+      "finalize": "",
+      "libs": [],
+      "x": 290,
+      "y": 420,
+      "wires": [
+          [
+              "9bfaa85e.dc8fa8"
+          ]
+      ]
+  },
+  {
+      "id": "9bfaa85e.dc8fa8",
+      "type": "switch",
+      "z": "bdf3150a.e64e18",
+      "name": "check_time",
+      "property": "payload",
+      "propertyType": "msg",
+      "rules": [
+          {
+              "t": "eq",
+              "v": "",
+              "vt": "str"
+          },
+          {
+              "t": "eq",
+              "v": "",
+              "vt": "str"
+          }
+      ],
+      "checkall": "true",
+      "repair": false,
+      "outputs": 2,
+      "x": 370,
+      "y": 320,
+      "wires": [
+          [
+              "6ad13919.c36548"
+          ],
+          []
+      ]
+  },
+  {
+      "id": "51ff3ee5.9613",
+      "type": "http in",
+      "z": "bdf3150a.e64e18",
+      "name": "",
+      "url": "/bad_air",
+      "method": "get",
+      "upload": false,
+      "swaggerDoc": "",
+      "x": 220,
+      "y": 160,
+      "wires": [
+          [
+              "6ad13919.c36548",
+              "6dbd7419.d08c5c"
+          ]
+      ]
+  },
+  {
+      "id": "6dbd7419.d08c5c",
+      "type": "mongodb out",
+      "z": "bdf3150a.e64e18",
+      "mongodb": "d8b7ea9e.687e18",
+      "name": "",
+      "collection": "flow-data",
+      "payonly": false,
+      "upsert": false,
+      "multi": false,
+      "operation": "store",
+      "x": 880,
+      "y": 80,
+      "wires": []
+  },
+  {
+      "id": "6053bcb7.55c644",
+      "type": "http request",
+      "z": "bdf3150a.e64e18",
+      "name": "",
+      "method": "GET",
+      "ret": "txt",
+      "paytoqs": false,
+      "url": "",
+      "persist": false,
+      "authType": "",
+      "x": 720,
+      "y": 380,
+      "wires": [
+          [
+              "6dbd7419.d08c5c"
+          ]
+      ]
+  },
+  {
+      "id": "ac6aafdc.49a05",
+      "type": "mongodb out",
+      "z": "24313efe.555462",
+      "mongodb": "d8b7ea9e.687e18",
+      "name": "",
+      "collection": "flow-data",
+      "payonly": false,
+      "upsert": false,
+      "multi": false,
+      "operation": "store",
+      "x": 830,
+      "y": 360,
+      "wires": []
+  }
+]
